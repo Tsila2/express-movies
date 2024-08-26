@@ -13,9 +13,13 @@
         <%- include('./partials/header') %>
         <h1><%= title %></h1>
 
-        <% for (movie of movies) {%>
-            <div><%= movie.title %> (<%= movie.year %>)</div>
-        <% } %>
+        <div id="movies">
+            <% for (movie of movies) {%>
+            <div>
+                <%= movie.title %> (<%= movie.year %>)
+            </div>
+            <% } %>
+        </div>
         <br>
         <form action="/movies" method="post">
             <label for="movietitle">Titre du film</label>
@@ -28,6 +32,34 @@
     </div>
 
     <%- include('./partials/footer') %>
+
+        <script>
+            const form = document.querySelector('form')
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                fetch('/movies', {
+                    method: 'post',
+                    body: new FormData(form)
+                })
+                    .then(checkStatus)
+                    .catch(function (error) {
+                        console.error('Request failed', error)
+                    })
+
+                function checkStatus(response) {
+                    if (response.status >= 200 && response.status < 300) {
+                        let newMovieDiv = document.createElement('div')
+                        const movieTitle = document.querySelector('#movietitle').value
+                        const movieYear = document.querySelector('#movieyear').value
+                        newMovieDiv.innerHTML = `${movieTitle} (${movieYear})`
+
+                        document.querySelector('#movies').appendChild(newMovieDiv)
+                        form.reset()
+                    }
+                }
+            })
+        </script>
 </body>
 
 </html>

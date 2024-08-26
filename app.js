@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser')
+const multer = require('multer')
+const upload = multer()
 
 app.use('/static', express.static('public'));
 // app.use(bodyParser.urlencoded({ extended: false }))
@@ -26,15 +28,29 @@ app.get('/movies', (req, res) => {
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-app.post('/movies', urlencodedParser, (req, res) => {
-    console.log(req.body)
+// app.post('/movies', urlencodedParser, (req, res) => {
+//     console.log(req.body)
 
-    const newMovie = { title: req.body.movietitle, year: req.body.movieyear }
-    // movies.push(newMovie)
-    movies = [...movies, newMovie]
-    console.log(movies)
+//     const newMovie = { title: req.body.movietitle, year: req.body.movieyear }
+//     // movies.push(newMovie)
+//     movies = [...movies, newMovie]
+//     console.log(movies)
 
-    res.sendStatus(201)
+//     res.sendStatus(201)
+// })
+
+app.post('/movies', upload.fields([]), (req, res) => {
+    if (!req.body) {
+        return res.sendStatus(501)
+    } else {
+        const formData = req.body
+        console.log('formData : ', formData)
+        const newMovie = { title: req.body.movietitle, year: req.body.movieyear }
+        movies = [...movies, newMovie]
+        console.log(movies)
+
+        res.sendStatus(201)
+    }
 })
 
 app.get('/movies/add', (req, res) => {
