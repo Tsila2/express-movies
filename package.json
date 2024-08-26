@@ -1,0 +1,17 @@
+{
+  "name": "express2",
+  "version": "1.0.0",
+  "description": "an app express for movies",
+  "main": "app.js",
+  "scripts": {
+    "dev": "test"
+  },
+  "keywords": [
+    "movies"
+  ],
+  "author": "Tsilavina Nomenjanahary",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
