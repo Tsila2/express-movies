@@ -4,7 +4,8 @@
   "description": "an app express for movies",
   "main": "app.js",
   "scripts": {
-    "dev": "test"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "keywords": [
     "movies"
@@ -12,6 +13,7 @@
   "author": "Tsilavina Nomenjanahary",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "nodemon": "^3.1.4"
   }
 }
