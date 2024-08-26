@@ -16,6 +16,14 @@
         <% for (movie of movies) {%>
             <div><%= movie.title %> (<%= movie.year %>)</div>
         <% } %>
+        <br>
+        <form action="/movies" method="post">
+            <label for="movietitle">Titre du film</label>
+            <input type="text" id="movietitle" name="movietitle">
+            <label for="movieyear">Année de sortie</label>
+            <input type="text" id="movieyear" name="movieyear">
+            <button type="submit">Ajouter</button>
+        </form>
 
     </div>
 
