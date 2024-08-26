@@ -11,3 +11,7 @@ a:hover {
     color: white;
     font-weight: bold;
 }
+
+.container {
+    min-height: 300px;
+}

@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/style.css">
     <title>Movies details</title>
 </head>
+
 <body>
-    <h1>Details du film numéro <%= moviesId %></h1>
-    <p>Titre : <%= title %></p>
+    <div class="container">
+        <%- include('./partials/header') %>
+        <h1>Details du film numéro <%= moviesId %></h1>
+        <p>Titre : <%= title %></p>
+    </div>
 
     <%- include('./partials/footer') %>
 </body>
+
 </html>
