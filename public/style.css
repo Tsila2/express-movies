@@ -1,3 +1,13 @@
-body{
+body {
     background-color: wheat;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+a:hover {
+    color: white;
+    font-weight: bold;
 }
