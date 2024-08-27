@@ -5,7 +5,8 @@ const multer = require('multer')
 const upload = multer()
 
 app.use('/static', express.static('public'));
-// app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json());
 
 const PORT = 3000;
 app.set('views', './views');
@@ -72,6 +73,29 @@ app.get('/', function (req, res) {
     // res.send('Hello <b>world</b>');
     res.render('index');
 })
+
+app.get('/login', (req, res) => {
+    res.render('login', { title: "Connexion" })
+})
+
+const users = { email: "tsilanmjr@gmail.com", password: "123456789" };
+
+app.post('/login', upload.fields([]), (req, res) => {
+    console.log("login post", req.body); // Should now print the parsed body
+    if (!req.body) {
+        res.sendStatus(501);
+    } else {
+        if (users.email === req.body.email && users.password === req.body.password) {
+            res.json({
+                email: "tsilanmjr@gmail.com",
+                favoriteMovie: "Deadpool",
+                lastLoginDate: new Date().toLocaleDateString()
+            });
+        } else {
+            res.sendStatus(401);
+        }
+    }
+});
 
 app.listen(PORT, function () {
     console.log(`listening in port ${PORT}`);

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Login page</title>
+</head>
+
+<body>
+    <%- include('./partials/header') %>
+
+        <div class="container">
+            <h1>
+                <%= title %>
+            </h1>
+            <br>
+            <div id="login">
+                <form>
+                    <legend>Veuillez saisir vos identifiants</legend>
+                    <label for="email">email</label>
+                    <input type="text" name="email" id="email">
+                    <label for="password">mot de passe</label>
+                    <input type="password" name="password" id="password">
+                    <button type="submit">connexion</button>
+                </form>
+            </div>
+
+        </div>
+
+        <%- include('./partials/footer') %>
+        <script src="/static/axios.min.js"></script>
+        <script>
+            var form = document.querySelector('form');
+            form.addEventListener("submit", loginUser);
+
+            function loginUser(event) {
+                loginUserWithAxios(event);
+            }
+
+            function loginUserWithAxios(event) {
+                event.preventDefault();
+                console.log('loginUserWithAxios');
+
+                var email = document.getElementById('email').value;
+                var password = document.getElementById('password').value;
+
+                axios.post('/login', {
+                    email: email,
+                    password: password
+                })
+                    .then(function (response) {
+                        // add token to localStorage
+                        var token = response.data;  // Adjust this according to the actual response structure
+                        localStorage.setItem('token', token);
+
+                        form.reset();
+                    })
+                    .catch(function (error) {
+                        console.error('There was an error logging in:', error);
+                    });
+            }
+
+        </script>
+</body>
+
+</html>
