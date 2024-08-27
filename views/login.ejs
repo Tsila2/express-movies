@@ -27,6 +27,10 @@
                 </form>
             </div>
 
+            <div id="profile" style="display: none;">
+                <button id="discon">Se déconnecter</button>
+            </div>
+
         </div>
 
         <%- include('./partials/footer') %>
@@ -35,13 +39,24 @@
             var form = document.querySelector('form');
             form.addEventListener("submit", loginUser);
 
-            function loginUser(event) {
-                loginUserWithAxios(event);
+            const loginArea = document.querySelector('#login')
+            const profileArea = document.querySelector('#profile')
+            const discon = document.querySelector('#discon')
+            const connectionLinkArea = document.querySelector('#connectionLink');
+
+            if (localStorage.getItem('token')) {
+                connectionLinkArea.innerHTML = '<a href="/login">déconnexion</a>';
+                loginArea.style.display = "none"
+                profileArea.style.display = "block"
+            } else {
+                connectionLinkArea.innerHTML = '<a href="/login">connexion</a>';
+                loginArea.style.display = "block"
+                profileArea.style.display = "none"
             }
 
-            function loginUserWithAxios(event) {
+            function loginUser(event) {
                 event.preventDefault();
-                console.log('loginUserWithAxios');
+                console.log('loginUser');
 
                 var email = document.getElementById('email').value;
                 var password = document.getElementById('password').value;
@@ -51,9 +66,11 @@
                     password: password
                 })
                     .then(function (response) {
-                        // add token to localStorage
-                        var token = response.data;  // Adjust this according to the actual response structure
+                        var token = response.data;
                         localStorage.setItem('token', token);
+                        loginArea.style.display = "none"
+                        profileArea.style.display = "block"
+                        connectionLinkArea.innerHTML = '<a href="/login">déconnexion</a>';
 
                         form.reset();
                     })
@@ -61,6 +78,13 @@
                         console.error('There was an error logging in:', error);
                     });
             }
+
+            discon.addEventListener('click', () => {
+                loginArea.style.display = "block"
+                profileArea.style.display = "none"
+                localStorage.removeItem('token')
+                connectionLinkArea.innerHTML = '<a href="/login">connexion</a>';
+            })
 
         </script>
 </body>
