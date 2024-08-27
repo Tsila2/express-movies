@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Recherche de film</title>
+</head>
+
+<body>
+    <div class="container">
+        <%- include('./partials/header') %>
+            <h1>Votre recherche sur <i>THE MOVIE DATABASE</i></h1>
+
+            <div>
+                <input type="text" id="search" name="search" placeholder="titre...">
+                <button id="btnSearch">Rechercher</button>
+            </div>
+
+            <br>
+            <div id="results">
+            </div>
+
+    </div>
+
+    <%- include('./partials/footer') %>
+        <script src="/static/axios.min.js"></script>
+        <script>
+            const API_KEY = "3c42ae2c51fa60a4d2d3dce24bc4eb1b";
+
+            let btnSearch = document.querySelector('#btnSearch')
+            let resultsDiv = document.querySelector('#results')
+
+            btnSearch.addEventListener('click', () => {
+                const search = document.querySelector('#search').value
+                const query = `https://api.themoviedb.org/3/search/movie?query=${search}&api_key=${API_KEY}&language=fr-FR`
+
+                axios.get(query)
+                    .then((response) => {
+                        resultsDiv.innerHTML = ""
+                        const results = response.data.results
+
+                        for (const result of results) {
+                            let movieDiv = document.createElement('div')
+                            movieDiv.innerHTML = `${result.title} (${result.release_date})`
+                            resultsDiv.appendChild(movieDiv)
+                        }
+                    })
+                    .catch((error) => { console.error("There's an error :", error) })
+            })
+        </script>
+</body>
+
+</html>

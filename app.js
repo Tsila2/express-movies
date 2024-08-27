@@ -53,6 +53,10 @@ app.post('/movies', upload.fields([]), (req, res) => {
     }
 })
 
+app.get('/movie-search', (req, res) => {
+    res.render('movie-search')
+})
+
 app.get('/movies/add', (req, res) => {
     res.send(`Bientôt un formulaire ici`);
 })
