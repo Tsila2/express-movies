@@ -61,12 +61,18 @@ let movies
 
 app.get('/movies', (req, res) => {
     const title = "Listes des films";
-    movies = [
-        { title: 'Le fabuleux destin d\'Amélie Poulin', year: 2001 },
-        { title: 'Buffet froid', year: 1979 },
-        { title: 'Le dinner de cons', year: 1998 },
-        { title: 'De rouille et d\'os', year: 2012 },
-    ];
+    // movies = [
+    //     { title: 'Le fabuleux destin d\'Amélie Poulin', year: 2001 },
+    //     { title: 'Buffet froid', year: 1979 },
+    //     { title: 'Le dinner de cons', year: 1998 },
+    //     { title: 'De rouille et d\'os', year: 2012 },
+    // ];
+
+    Movie.find()
+        .then((response) => {
+            movies = response
+        })
+        .catch((err) => console.err(err))
 
     // res.send('Bientôt des films ici');
     res.render('movies', { movies: movies, title: title })
