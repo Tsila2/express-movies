@@ -15,8 +15,19 @@ app.use(
     jwt({
         secret: secret,
         algorithms: ["HS256"],
-    }).unless({ path: ["/login", "/"] })
+    }).unless({ path: ["/login", "/", "/movies", "/movies-details", "/movie-search"] })
 );
+app.use((err, req, res, next) => {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401);
+        res.render('unauthorized', { message: 'Access denied. You are not authorized to view this page.' });
+    } else {
+        next(err);
+    }
+});
+app.use((err, req, res, next) => {
+    res.status(500).send('Something went wrong!');
+});
 
 
 const PORT = 3000;
@@ -111,18 +122,10 @@ app.post('/login', upload.fields([]), (req, res) => {
     }
 });
 
-app.use((err, req, res, next) => {
-    if (err.name === 'UnauthorizedError') {
-        res.status(401);
-        res.render('unauthorized', { message: 'Access denied. You are not authorized to view this page.' });
-    } else {
-        next(err);
-    }
-});
-
-app.use((err, req, res, next) => {
-    res.status(500).send('Something went wrong!');
-});
+app.get('/member-only', (req,res) => {
+    console.log("req.auth :",req.auth)
+    res.send(req.headers)
+})
 
 app.listen(PORT, function () {
     console.log(`listening in port ${PORT}`);

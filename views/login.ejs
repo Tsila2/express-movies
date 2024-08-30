@@ -31,6 +31,9 @@
                 <button id="discon">Se déconnecter</button>
                 <button id="displaypayload">Voir le payload</button>
                 <div id="decodedpayload"></div>
+                <div>
+                    <a href="#" id="member-only">Member only</a>
+                </div>
             </div>
 
         </div>
@@ -47,6 +50,8 @@
             const connectionLinkArea = document.querySelector('#connectionLink');
 
             const displayPayload = document.querySelector('#displaypayload')
+
+            const memberOnly = document.querySelector('#member-only')
 
             if (localStorage.getItem('token')) {
                 connectionLinkArea.innerHTML = '<a href="/login">déconnexion</a>';
@@ -106,6 +111,29 @@
                 let decodedPayload = document.querySelector('#decodedpayload')
                 decodedPayload.innerHTML = `<pre> ${JSON.stringify(payload)} </pre>`
             })
+
+            function requestWithToken (e) {
+                e.preventDefault()
+
+                let page = this.id
+                let token = localStorage.getItem('token')
+                let config = {}
+
+                if(token){
+                    config.headers = {'Authorization':`Bearer ${token}`}
+                }
+
+                axios.get(
+                    `/${page}`,config
+                ).then((res) => {
+                    console.log("success");
+                    console.log(res)
+                }).catch((error) => {
+                    console.error("Request failed ",error)
+                })
+            }
+
+            memberOnly.addEventListener('click',requestWithToken)
 
         </script>
 </body>
