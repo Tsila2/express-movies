@@ -3,11 +3,21 @@ const app = express();
 const bodyParser = require('body-parser')
 const multer = require('multer')
 const upload = multer()
-const jwt = require('jsonwebtoken')
+const jsonWebToken = require('jsonwebtoken')
+var { expressjwt: jwt } = require("express-jwt");
+
+const secret = "qsdjS12ozehdoIJ123DJOZJLDSCqsdeffdg123ER56SDFZedhWXojqshduzaohduihqsDAqsdq"
 
 app.use('/static', express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
+app.use(
+    jwt({
+      secret: secret,
+      algorithms: ["HS256"],
+    }).unless({ path: ["/login","/"] })
+  );
+
 
 const PORT = 3000;
 app.set('views', './views');
@@ -80,7 +90,7 @@ app.get('/login', (req, res) => {
 })
 
 const users = { email: "tsilanmjr@gmail.com", password: "123456789" };
-const secret = "qsdjS12ozehdoIJ123DJOZJLDSCqsdeffdg123ER56SDFZedhWXojqshduzaohduihqsDAqsdq"
+// const secret = "qsdjS12ozehdoIJ123DJOZJLDSCqsdeffdg123ER56SDFZedhWXojqshduzaohduihqsDAqsdq"
 
 app.post('/login', upload.fields([]), (req, res) => {
     console.log("login post", req.body); // Should now print the parsed body
@@ -88,7 +98,7 @@ app.post('/login', upload.fields([]), (req, res) => {
         res.sendStatus(501);
     } else {
         if (users.email === req.body.email && users.password === req.body.password) {
-            const myToken = jwt.sign({iss: 'http://localhost:3000' , user: 'Sam' , scope:'client'}, secret)
+            const myToken = jsonWebToken.sign({ iss: 'http://localhost:3000', user: 'Sam', scope: 'client' }, secret)
             // res.json({
             //     email: "tsilanmjr@gmail.com",
             //     favoriteMovie: "Deadpool",
