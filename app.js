@@ -111,8 +111,6 @@ app.post('/movies', upload.fields([]), (req, res) => {
                 console.error("There's an error :", err)
                 return
             })
-
-
     }
 })
 
@@ -126,9 +124,28 @@ app.get('/movies/add', (req, res) => {
 
 app.get('/movies/:id', (req, res) => {
     const id = req.params.id;
-    // res.send(`Film numéro ${id}`);
-    const title = "Terminator";
-    res.render('movies-details', { moviesId: id, title: title })
+    Movie.findById(id).exec().then((response) => {
+        console.log("Response :", response)
+        res.render('movies-details', { movieId: response._id, movie: response })
+    }).catch((err) => {
+        console.error("Error :", err)
+        res.status(500).send("Update error");
+    })
+})
+
+app.post('/movies/:id', (req, res) => {
+    if (!req.body) {
+        return res.status(404).send("Movie not found");
+    }
+    console.log({ movietitle: req.body.movietitle, movieyear: req.body.movieyear })
+    const id = req.params.id;
+    Movie.findByIdAndUpdate(id, { $set: { movietitle: req.body.movietitle, movieyear: req.body.movieyear } }, { new: true }).then((response) => {
+        console.log("Response :", response)
+        res.redirect('/movies/' + id)
+    }).catch((err) => {
+        console.error("Error :", err)
+        res.status(500).send("Update error");
+    })
 })
 
 app.put('/movies/:id', (req, res) => {
