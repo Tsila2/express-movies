@@ -6,11 +6,7 @@ const upload = multer()
 const jsonWebToken = require('jsonwebtoken')
 const { expressjwt: jwt } = require("express-jwt");
 const mongoose = require('mongoose');
-
-// await mongoose.connect('mongodb://localhost:27017/express');
-
-// const db = mongoose.connection
-// db.on()
+const { faker } = require('@faker-js/faker');
 
 mongoose.connect('mongodb://localhost:27017/express')
     .then(() => console.log('Connected!'));
@@ -23,8 +19,10 @@ const movieSchema = new Schema({
 });
 
 const Movie = mongoose.model('Movie', movieSchema)
-const title = "Terminator"
-const year = 1984
+// const title = "Terminator"
+// const year = 1984
+const title = faker.lorem.sentence(5)
+const year = Math.floor(Math.random() * 80) + 1950
 
 const myMovie = new Movie({ movietitle: title, movieyear: year })
 
