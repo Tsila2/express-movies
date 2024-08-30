@@ -7,8 +7,9 @@ const jsonWebToken = require('jsonwebtoken')
 const { expressjwt: jwt } = require("express-jwt");
 const mongoose = require('mongoose');
 const { faker } = require('@faker-js/faker');
+const config = require('./config');
 
-mongoose.connect('mongodb://localhost:27017/express')
+mongoose.connect(config.mongoURI)
     .then(() => console.log('Connected!'));
 
 const Schema = mongoose.Schema;
@@ -29,7 +30,7 @@ const Movie = mongoose.model('Movie', movieSchema)
 
 // myMovie.save().then((response) => console.log(response));
 
-const secret = "qsdjS12ozehdoIJ123DJOZJLDSCqsdeffdg123ER56SDFZedhWXojqshduzaohduihqsDAqsdq"
+const secret = config.jwtSecret
 
 app.use('/static', express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -38,7 +39,7 @@ app.use(
     jwt({
         secret: secret,
         algorithms: ["HS256"],
-    }).unless({ path: ["/login", "/", "/movies", "/movies-details", "/movie-search"] })
+    }).unless({ path: ["/login", "/", "/movies", "/movies-details", "/movie-search", "movies/:id"] })
 );
 app.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
@@ -52,14 +53,12 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something went wrong!');
 });
 
-
-const PORT = 3000;
 app.set('views', './views');
 app.set('view engine', 'ejs');
 
 let movies
 
-app.get('/movies', (req, res) => {
+app.get('/movies',async (req, res) => {
     const title = "Listes des films";
     // movies = [
     //     { title: 'Le fabuleux destin d\'Amélie Poulin', year: 2001 },
@@ -68,7 +67,7 @@ app.get('/movies', (req, res) => {
     //     { title: 'De rouille et d\'os', year: 2012 },
     // ];
 
-    Movie.find()
+    await Movie.find()
         .then((response) => {
             movies = response
         })
@@ -142,7 +141,6 @@ app.get('/login', (req, res) => {
 })
 
 const users = { email: "tsilanmjr@gmail.com", password: "123456789" };
-// const secret = "qsdjS12ozehdoIJ123DJOZJLDSCqsdeffdg123ER56SDFZedhWXojqshduzaohduihqsDAqsdq"
 
 app.post('/login', upload.fields([]), (req, res) => {
     console.log("login post", req.body); // Should now print the parsed body
@@ -167,6 +165,8 @@ app.get('/member-only', (req, res) => {
     console.log("req.auth :", req.auth)
     res.send(req.headers)
 })
+
+const PORT = config.port
 
 app.listen(PORT, function () {
     console.log(`listening in port ${PORT}`);
