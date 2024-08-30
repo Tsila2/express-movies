@@ -4,7 +4,31 @@ const bodyParser = require('body-parser')
 const multer = require('multer')
 const upload = multer()
 const jsonWebToken = require('jsonwebtoken')
-var { expressjwt: jwt } = require("express-jwt");
+const { expressjwt: jwt } = require("express-jwt");
+const mongoose = require('mongoose');
+
+// await mongoose.connect('mongodb://localhost:27017/express');
+
+// const db = mongoose.connection
+// db.on()
+
+mongoose.connect('mongodb://localhost:27017/express')
+    .then(() => console.log('Connected!'));
+
+const Schema = mongoose.Schema;
+
+const movieSchema = new Schema({
+    movietitle: String,
+    movieyear: Number,
+});
+
+const Movie = mongoose.model('Movie', movieSchema)
+const title = "Terminator"
+const year = 1984
+
+const myMovie = new Movie({ movietitle: title, movieyear: year })
+
+myMovie.save().then((response) => console.log(response));
 
 const secret = "qsdjS12ozehdoIJ123DJOZJLDSCqsdeffdg123ER56SDFZedhWXojqshduzaohduihqsDAqsdq"
 
@@ -122,8 +146,8 @@ app.post('/login', upload.fields([]), (req, res) => {
     }
 });
 
-app.get('/member-only', (req,res) => {
-    console.log("req.auth :",req.auth)
+app.get('/member-only', (req, res) => {
+    console.log("req.auth :", req.auth)
     res.send(req.headers)
 })
 
