@@ -13,10 +13,10 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 app.use(
     jwt({
-      secret: secret,
-      algorithms: ["HS256"],
-    }).unless({ path: ["/login","/"] })
-  );
+        secret: secret,
+        algorithms: ["HS256"],
+    }).unless({ path: ["/login", "/"] })
+);
 
 
 const PORT = 3000;
@@ -109,6 +109,19 @@ app.post('/login', upload.fields([]), (req, res) => {
             res.sendStatus(401);
         }
     }
+});
+
+app.use((err, req, res, next) => {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401);
+        res.render('unauthorized', { message: 'Access denied. You are not authorized to view this page.' });
+    } else {
+        next(err);
+    }
+});
+
+app.use((err, req, res, next) => {
+    res.status(500).send('Something went wrong!');
 });
 
 app.listen(PORT, function () {
