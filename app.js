@@ -39,7 +39,7 @@ app.use(
     jwt({
         secret: secret,
         algorithms: ["HS256"],
-    }).unless({ path: ["/login", "/", "/movies", "/movies-details", "/movie-search", "movies/:id"] })
+    }).unless({ path: ["/login", "/", "/movies", "/movies-details", "/movie-search", new RegExp('/movies.*/', 'i')] })
 );
 app.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
@@ -58,7 +58,7 @@ app.set('view engine', 'ejs');
 
 let movies
 
-app.get('/movies',async (req, res) => {
+app.get('/movies', async (req, res) => {
     const title = "Listes des films";
     // movies = [
     //     { title: 'Le fabuleux destin d\'Amélie Poulin', year: 2001 },
@@ -129,6 +129,21 @@ app.get('/movies/:id', (req, res) => {
     // res.send(`Film numéro ${id}`);
     const title = "Terminator";
     res.render('movies-details', { moviesId: id, title: title })
+})
+
+app.put('/movies/:id', (req, res) => {
+    if (!req.body) {
+        return res.status(404).send("Movie not found");
+    }
+    console.log({ movietitle: req.body.movietitle, movieyear: req.body.movieyear })
+    const id = req.params.id;
+    Movie.findByIdAndUpdate(id, { $set: { movietitle: req.body.movietitle, movieyear: req.body.movieyear } }, { new: true }).then((response) => {
+        console.log("Response :", response)
+        res.status(200).send(response);
+    }).catch((err) => {
+        console.error("Error :", err)
+        res.status(500).send("Update error");
+    })
 })
 
 app.get('/', function (req, res) {
