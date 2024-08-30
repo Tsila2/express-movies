@@ -156,10 +156,21 @@ app.put('/movies/:id', (req, res) => {
     const id = req.params.id;
     Movie.findByIdAndUpdate(id, { $set: { movietitle: req.body.movietitle, movieyear: req.body.movieyear } }, { new: true }).then((response) => {
         console.log("Response :", response)
-        res.status(200).send(response);
+        res.redirect('/movies')
     }).catch((err) => {
         console.error("Error :", err)
         res.status(500).send("Update error");
+    })
+})
+
+app.delete('/movies/:id', (req, res) => {
+    const id = req.params.id;
+    Movie.findByIdAndDelete(id).then((response) => {
+        console.log("Response :", response)
+        res.status(202).send(response);
+    }).catch((err) => {
+        console.error("Error :", err)
+        res.status(500).send("Delete error");
     })
 })
 

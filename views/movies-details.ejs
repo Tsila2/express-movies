@@ -11,7 +11,7 @@
 <body>
     <div class="container">
         <%- include('./partials/header') %>
-        <h1>Details du film numéro <%= movieId %></h1>
+        <h1>Details du film</h1>
         <div>
             <form action="/movies/<%= movieId %>" method="post">
                 <legend>Modifier le film</legend>
@@ -21,10 +21,33 @@
                 <input type="text" id="movieyear" name="movieyear" value="<%= movie.movieyear %>">
                 <button type="submit">Modifier</button>
             </form>
+            <button id="sup-button">Supprimer</button>
+
         </div>
     </div>
 
     <%- include('./partials/footer') %>
+
+    <script src="/static/axios.min.js"></script>
+    <script>
+        let supButton = document.querySelector('#sup-button')
+
+        supButton.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            // Assuming `movieId` is passed from the server to the template
+            let movieId = "<%= movieId %>";
+            let url = `/movies/${movieId}`;
+
+            axios.delete(url)
+                .then((response) => {
+                    window.location = "/movies"; // Redirect to movies list after deletion
+                })
+                .catch((err) => {
+                    console.error("Error:", err);
+                });
+        });
+    </script>
 </body>
 
 </html>
