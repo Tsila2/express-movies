@@ -21,12 +21,13 @@ const movieSchema = new Schema({
 const Movie = mongoose.model('Movie', movieSchema)
 // const title = "Terminator"
 // const year = 1984
-const title = faker.lorem.sentence(5)
-const year = Math.floor(Math.random() * 80) + 1950
 
-const myMovie = new Movie({ movietitle: title, movieyear: year })
+// const title = faker.lorem.sentence(5)
+// const year = Math.floor(Math.random() * 80) + 1950
 
-myMovie.save().then((response) => console.log(response));
+// const myMovie = new Movie({ movietitle: title, movieyear: year })
+
+// myMovie.save().then((response) => console.log(response));
 
 const secret = "qsdjS12ozehdoIJ123DJOZJLDSCqsdeffdg123ER56SDFZedhWXojqshduzaohduihqsDAqsdq"
 
@@ -90,11 +91,23 @@ app.post('/movies', upload.fields([]), (req, res) => {
     } else {
         const formData = req.body
         console.log('formData : ', formData)
-        const newMovie = { title: req.body.movietitle, year: req.body.movieyear }
-        movies = [...movies, newMovie]
-        console.log(movies)
+        // const newMovie = { title: req.body.movietitle, year: req.body.movieyear }
+        // movies = [...movies, newMovie]
+        // console.log(movies)
 
-        res.sendStatus(201)
+        // Mongo
+        const myMovie = new Movie({ movietitle: req.body.movietitle, movieyear: req.body.movieyear })
+        myMovie.save()
+            .then((response) => {
+                console.log(response)
+                res.sendStatus(201)
+            })
+            .catch((err) => {
+                console.error("There's an error :", err)
+                return
+            })
+
+
     }
 })
 
